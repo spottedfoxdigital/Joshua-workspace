@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="The Blind Guy">
+  <rect x="24" y="24" width="464" height="464" rx="100" fill="#FE0006"/>
+  <rect x="146" y="138" width="220" height="236" rx="22" fill="#ffffff"/>
+  <g fill="#FE0006">
+    <rect x="146" y="214" width="220" height="20"/>
+    <rect x="146" y="290" width="220" height="20"/>
+  </g>
+</svg>
