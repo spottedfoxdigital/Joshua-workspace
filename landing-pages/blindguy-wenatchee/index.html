@@ -261,7 +261,8 @@
         </div>
 
         <div class="form-card" id="estimate">
-          <form id="hero-form" novalidate onsubmit="handleSubmit(event,'hero-form')">
+          <form id="hero-form" name="estimate-hero" method="POST" data-netlify="true" data-netlify-honeypot="website" novalidate onsubmit="handleSubmit(event,'hero-form')">
+            <input type="hidden" name="form-name" value="estimate-hero">
             <h3>Get Your Free Estimate</h3>
             <p class="fc-sub">No commitment required</p>
             <div class="field">
@@ -433,7 +434,8 @@
           </div>
         </div>
         <div class="form-card">
-          <form id="cta-form" novalidate onsubmit="handleSubmit(event,'cta-form')">
+          <form id="cta-form" name="estimate-contact" method="POST" data-netlify="true" data-netlify-honeypot="website" novalidate onsubmit="handleSubmit(event,'cta-form')">
+            <input type="hidden" name="form-name" value="estimate-contact">
             <h3>Request Your Free Estimate</h3>
             <p class="fc-sub">No commitment required</p>
             <div class="field">
@@ -583,15 +585,14 @@
       if(btn){ btn.textContent = 'Something went wrong — call (509) 980-1402'; btn.disabled = true; }
     };
 
-    // TODO: replace {{LEAD_ENDPOINT}} with the live Netlify Function URL (emails the lead + writes Supabase).
-    // fetch('{{LEAD_ENDPOINT}}', {
-    //   method: 'POST',
-    //   headers: {'Content-Type':'application/json'},
-    //   body: JSON.stringify(payload)
-    // }).then(function(r){ if(!r.ok) throw new Error(); }).then(ok).catch(err);
-
-    // Until the endpoint is wired, confirm inline so the page is testable:
-    ok();
+    // Submit to Netlify Forms via AJAX so we can keep the inline success state (no redirect).
+    // The hidden form-name field plus all named inputs are sent URL-encoded.
+    var body = new URLSearchParams(new FormData(form)).toString();
+    fetch('/', {
+      method: 'POST',
+      headers: {'Content-Type':'application/x-www-form-urlencoded'},
+      body: body
+    }).then(function(r){ if(!r.ok) throw new Error('submit failed'); }).then(ok).catch(err);
     return false;
   }
   </script>
@@ -606,9 +607,11 @@ BUILT:     2026-06-17
 GTM ID:    GTM-KRK5NSR  (already baked in - same container as main site; separate domain is fine)
 
 PLACEHOLDERS TO REPLACE BEFORE LAUNCH:
-1. {{LEAD_ENDPOINT}}  - Netlify Function URL that emails the lead (destination: EMAIL NOTIFICATION)
-                        and writes the Supabase record. Currently the form confirms inline for testing;
-                        uncomment the fetch() block in handleSubmit() once the endpoint exists.
+1. [DONE] Lead delivery - both forms use Netlify Forms (data-netlify="true"), submitted via AJAX
+                        to keep the inline success state. Forms: "estimate-hero" + "estimate-contact".
+                        After first deploy, add an email notification (Forms > Settings) to
+                        tristaff@blindguy.com so each lead is emailed. Submissions also stored in
+                        the Netlify dashboard. Honeypot field "website" filters bots.
 2. [DONE] Contact email  - footer set to tristaff@blindguy.com (confirm this is monitored).
 3. [DONE] Privacy policy - privacy.html created and linked from the footer.
 4. [DONE] Gallery images - 6 real photos wired in images/ (optimized JPGs).
